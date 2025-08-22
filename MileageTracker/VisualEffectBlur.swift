@@ -1,11 +1,3 @@
-//
-//  VisualEffectBlur.swift
-//  MileageTracker
-//
-//  Created by Ari Greene Cummings on 8/21/25.
-//
-
-
 import SwiftUI
 
 struct VisualEffectBlur: UIViewRepresentable {

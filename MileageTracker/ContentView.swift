@@ -38,10 +38,11 @@ struct ContentView: View {
                         ForEach(vehicles) { vehicle in
                             Text(vehicle.name).tag(vehicle as Vehicle?)
                         }
-                        Text("Create New Vehicle").tag(nil as Vehicle?)
+                        Text("Create New Vehicle").tag(Vehicle(id: UUID(), name: "Create New Vehicle"))
                     }
                     .onChange(of: selectedVehicle) { _, newValue in
-                        if newValue == nil {
+                        if newValue?.name == "Create New Vehicle" {
+                            selectedVehicle = nil
                             showAddVehicleSheet = true
                         }
                     }
@@ -67,10 +68,8 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            if vehicles.isEmpty {
-                vehicles.append(Vehicle(id: UUID(), name: "Select a Vehicle"))
-                StorageManager.saveVehicles(vehicles)
-            }
+            vehicles.removeAll { $0.name == "Default Vehicle" }
+            StorageManager.saveVehicles(vehicles)
         }
     }
 }
