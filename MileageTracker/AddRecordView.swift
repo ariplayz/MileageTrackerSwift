@@ -12,6 +12,8 @@ struct AddRecordView: View {
     @State private var description = ""
     @State private var category = ""
     @State private var categories: [String] = StorageManager.loadCategories()
+    @State private var newCategoryName = ""
+    @State private var isAddingNewCategory = false
 
     var body: some View {
         NavigationView {
@@ -43,9 +45,15 @@ struct AddRecordView: View {
                         }
                         Text("Add New Category").tag("Add New Category")
                     }
-                    .onChange(of: category) { newValue in
-                        if newValue == "Add New Category" {
-                            addNewCategory()
+                    .onChange(of: category) {
+                        if category == "Add New Category" {
+                            isAddingNewCategory = true
+                        }
+                    }
+                    if isAddingNewCategory {
+                        TextField("New Category Name", text: $newCategoryName)
+                        Button("Save Category") {
+                            saveNewCategory()
                         }
                     }
                 }
@@ -91,11 +99,13 @@ struct AddRecordView: View {
         StorageManager.saveRecords(records)
     }
 
-    private func addNewCategory() {
-        let newCategory = "New Category \(categories.count + 1)"
-        categories.append(newCategory)
+    private func saveNewCategory() {
+        guard !newCategoryName.isEmpty else { return }
+        categories.append(newCategoryName)
         StorageManager.saveCategories(categories)
-        category = newCategory
+        category = newCategoryName
+        newCategoryName = ""
+        isAddingNewCategory = false
     }
 }
 

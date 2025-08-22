@@ -6,7 +6,10 @@ struct MileageLogView: View {
 
     var body: some View {
         List {
-            ForEach(filteredRecords) { record in
+            ForEach(filteredRecords.indices, id: \.self) { index in
+                let record = filteredRecords[index]
+                let milesSinceLast = index > 0 ? record.miles - filteredRecords[index - 1].miles : 0.0
+
                 VStack(alignment: .leading) {
                     Text(record.vehicleName)
                         .font(.headline)
@@ -19,6 +22,8 @@ struct MileageLogView: View {
                     }
                     Text("Description: \(record.description)")
                     Text("Category: \(record.category)")
+                    Text("Miles Since Last: \(milesSinceLast, specifier: "%.2f")")
+                        .foregroundColor(.gray)
                     Text(record.date, style: .date)
                         .font(.caption)
                         .foregroundColor(.gray)
