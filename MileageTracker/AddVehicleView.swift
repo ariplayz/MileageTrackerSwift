@@ -4,21 +4,12 @@ struct AddVehicleView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var vehicles: [Vehicle]
     @State private var vehicleName = ""
-    @State private var make = ""
-    @State private var model = ""
-    @State private var year = ""
-    @State private var details = ""
 
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("Vehicle Details")) {
                     TextField("Name", text: $vehicleName)
-                    TextField("Make", text: $make)
-                    TextField("Model", text: $model)
-                    TextField("Year", text: $year)
-                        .keyboardType(.numberPad)
-                    TextField("Other Details", text: $details)
                 }
             }
             .navigationTitle("Add Vehicle")
@@ -44,6 +35,7 @@ struct AddVehicleView: View {
             name: vehicleName.isEmpty ? "Unnamed Vehicle" : vehicleName
         )
         vehicles.append(newVehicle)
+        StorageManager.saveVehicles(vehicles)
     }
 }
 

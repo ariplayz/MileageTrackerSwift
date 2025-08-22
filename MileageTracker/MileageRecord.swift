@@ -1,14 +1,6 @@
-//
-//  MileageRecord.swift
-//  MileageTracker
-//
-//  Created by Ari Greene Cummings on 8/21/25.
-//
-
-
 import Foundation
 
-struct MileageRecord: Identifiable {
+struct MileageRecord: Identifiable, Codable {
     let id: UUID
     let date: Date
     let vehicleName: String

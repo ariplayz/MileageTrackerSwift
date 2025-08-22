@@ -1,13 +1,10 @@
 import SwiftUI
+import Foundation
 
 struct AddRecordView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var records: [MileageRecord]
-    @State private var selectedVehicle: Vehicle?
-    @State private var showAddVehicleSheet = false
-    @State private var vehicles: [Vehicle] = [
-        Vehicle(id: UUID(), name: "Default Vehicle") // Example vehicle
-    ]
+    var selectedVehicle: Vehicle?
     @State private var miles = ""
     @State private var fuelMode = false
     @State private var gallons = ""
@@ -17,14 +14,8 @@ struct AddRecordView: View {
         NavigationView {
             Form {
                 Section(header: Text("Vehicle")) {
-                    Picker("Select Vehicle", selection: $selectedVehicle) {
-                        vehiclePickerOptions()
-                    }
-                    .onChange(of: selectedVehicle) { _, _ in
-                        if selectedVehicle == nil {
-                            showAddVehicleSheet = true
-                        }
-                    }
+                    Text(selectedVehicle?.name ?? "No Vehicle Selected")
+                        .foregroundColor(.gray)
                 }
                 Section(header: Text("Miles")) {
                     TextField("Miles Driven", text: $miles)
@@ -54,18 +45,6 @@ struct AddRecordView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showAddVehicleSheet) {
-                AddVehicleView(vehicles: $vehicles)
-            }
-        }
-    }
-
-    private func vehiclePickerOptions() -> some View {
-        Group {
-            ForEach(vehicles) { vehicle in
-                Text(vehicle.name).tag(vehicle as Vehicle?)
-            }
-            Text("Create New Vehicle").tag(nil as Vehicle?)
         }
     }
 
@@ -88,9 +67,10 @@ struct AddRecordView: View {
             cost: cost
         )
         records.append(newRecord)
+        StorageManager.saveRecords(records)
     }
 }
 
 #Preview {
-    AddRecordView(records: .constant([]))
+    AddRecordView(records: .constant([]), selectedVehicle: nil)
 }

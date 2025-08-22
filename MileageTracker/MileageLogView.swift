@@ -1,52 +1,35 @@
-//
-//  MileageLogView.swift
-//  MileageTracker
-//
-//  Created by Ari Greene Cummings on 8/21/25.
-//
-
-
 import SwiftUI
 
 struct MileageLogView: View {
-    @State private var records: [MileageRecord] = []
-    @State private var showAddRecordSheet = false
+    @Binding var records: [MileageRecord]
+    var selectedVehicle: Vehicle?
 
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(records) { record in
-                    VStack(alignment: .leading) {
-                        Text("Date: \(record.date, format: .dateTime)")
-                        Text("Vehicle: \(record.vehicleName)")
-                        Text("Miles: \(record.miles)")
-                        if let mpg = record.mpg {
-                            Text("MPG: \(mpg, specifier: "%.2f")")
-                        }
-                        if let cost = record.cost {
-                            Text("Cost: $\(cost, specifier: "%.2f")")
-                        }
-                    }
+        List(filteredRecords) { record in
+            VStack(alignment: .leading) {
+                Text(record.vehicleName)
+                    .font(.headline)
+                Text("Miles: \(record.miles, specifier: "%.2f")")
+                if let mpg = record.mpg {
+                    Text("MPG: \(mpg, specifier: "%.2f")")
                 }
-                .onDelete { indexSet in
-                    records.remove(atOffsets: indexSet)
+                if let cost = record.cost {
+                    Text("Cost: $\(cost, specifier: "%.2f")")
                 }
-            }
-            .navigationTitle("Mileage Log")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showAddRecordSheet = true }) {
-                        Label("Add Record", systemImage: "plus")
-                    }
-                }
-            }
-            .sheet(isPresented: $showAddRecordSheet) {
-                AddRecordView(records: $records)
+                Text(record.date, style: .date)
+                    .font(.caption)
+                    .foregroundColor(.gray)
             }
         }
+        .navigationTitle("Log")
+    }
+
+    private var filteredRecords: [MileageRecord] {
+        guard let selectedVehicle = selectedVehicle else { return [] }
+        return records.filter { $0.vehicleName == selectedVehicle.name }
     }
 }
 
 #Preview {
-    MileageLogView()
+    MileageLogView(records: .constant([]), selectedVehicle: nil)
 }
