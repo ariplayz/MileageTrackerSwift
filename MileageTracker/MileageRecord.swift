@@ -7,4 +7,6 @@ struct MileageRecord: Identifiable, Codable {
     let miles: Double
     let mpg: Double?
     let cost: Double?
+    let description: String
+    let category: String
 }

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var showAddRecordSheet = false
-    @State private var selectedVehicle: Vehicle? = nil
+    @State private var selectedVehicle: Vehicle? = StorageManager.loadLastSelectedVehicle()
     @State private var showAddVehicleSheet = false
     @State private var vehicles: [Vehicle] = StorageManager.loadVehicles()
     @State private var records: [MileageRecord] = StorageManager.loadRecords()
@@ -10,7 +10,6 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // Background with liquid glass effect
                 VisualEffectBlur(blurStyle: .systemMaterial)
                     .edgesIgnoringSafeArea(.all)
 
@@ -44,6 +43,8 @@ struct ContentView: View {
                         if newValue?.name == "Create New Vehicle" {
                             selectedVehicle = nil
                             showAddVehicleSheet = true
+                        } else {
+                            StorageManager.saveLastSelectedVehicle(newValue)
                         }
                     }
                     .pickerStyle(MenuPickerStyle())

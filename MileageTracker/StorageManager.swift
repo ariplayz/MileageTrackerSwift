@@ -3,6 +3,8 @@ import Foundation
 struct StorageManager {
     static let recordsKey = "mileageRecords"
     static let vehiclesKey = "vehicles"
+    static let categoriesKey = "categories"
+    static let lastSelectedVehicleKey = "lastSelectedVehicle"
 
     static func saveRecords(_ records: [MileageRecord]) {
         if let data = try? JSONEncoder().encode(records) {
@@ -30,5 +32,27 @@ struct StorageManager {
             return vehicles
         }
         return []
+    }
+
+    static func saveCategories(_ categories: [String]) {
+        UserDefaults.standard.set(categories, forKey: categoriesKey)
+    }
+
+    static func loadCategories() -> [String] {
+        return UserDefaults.standard.stringArray(forKey: categoriesKey) ?? []
+    }
+
+    static func saveLastSelectedVehicle(_ vehicle: Vehicle?) {
+        if let vehicle = vehicle, let data = try? JSONEncoder().encode(vehicle) {
+            UserDefaults.standard.set(data, forKey: lastSelectedVehicleKey)
+        }
+    }
+
+    static func loadLastSelectedVehicle() -> Vehicle? {
+        if let data = UserDefaults.standard.data(forKey: lastSelectedVehicleKey),
+           let vehicle = try? JSONDecoder().decode(Vehicle.self, from: data) {
+            return vehicle
+        }
+        return nil
     }
 }
