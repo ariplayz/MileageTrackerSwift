@@ -1,17 +1,13 @@
-//
-//  AddRecordView.swift
-//  MileageTracker
-//
-//  Created by Ari Greene Cummings on 8/21/25.
-//
-
-
 import SwiftUI
 
 struct AddRecordView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var records: [MileageRecord]
-    @State private var vehicleName = ""
+    @State private var selectedVehicle: Vehicle?
+    @State private var showAddVehicleSheet = false
+    @State private var vehicles: [Vehicle] = [
+        Vehicle(id: UUID(), name: "Default Vehicle") // Example vehicle
+    ]
     @State private var miles = ""
     @State private var fuelMode = false
     @State private var gallons = ""
@@ -21,7 +17,17 @@ struct AddRecordView: View {
         NavigationView {
             Form {
                 Section(header: Text("Vehicle")) {
-                    TextField("Vehicle Name", text: $vehicleName)
+                    Picker("Select Vehicle", selection: $selectedVehicle) {
+                        ForEach(vehicles) { vehicle in
+                            Text(vehicle.name).tag(vehicle as Vehicle?)
+                        }
+                        Text("Create New Vehicle").tag(nil as Vehicle?)
+                    }
+                    .onChange(of: selectedVehicle) { newValue in
+                        if newValue == nil {
+                            showAddVehicleSheet = true
+                        }
+                    }
                 }
                 Section(header: Text("Miles")) {
                     TextField("Miles Driven", text: $miles)
@@ -51,6 +57,9 @@ struct AddRecordView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showAddVehicleSheet) {
+                AddVehicleView(vehicles: $vehicles)
+            }
         }
     }
 
@@ -67,7 +76,7 @@ struct AddRecordView: View {
         let newRecord = MileageRecord(
             id: UUID(),
             date: Date(),
-            vehicleName: vehicleName,
+            vehicleName: selectedVehicle?.name ?? "Unknown",
             miles: miles,
             mpg: mpg,
             cost: cost

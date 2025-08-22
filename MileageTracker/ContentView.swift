@@ -7,6 +7,10 @@ struct ContentView: View {
                 .tabItem {
                     Label("Log", systemImage: "list.bullet")
                 }
+            AddRecordHomeView()
+                .tabItem {
+                    Label("Add Record", systemImage: "plus.circle")
+                }
             VehicleListView()
                 .tabItem {
                     Label("Vehicles", systemImage: "car")
