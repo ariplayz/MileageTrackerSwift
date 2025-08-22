@@ -18,13 +18,10 @@ struct AddRecordView: View {
             Form {
                 Section(header: Text("Vehicle")) {
                     Picker("Select Vehicle", selection: $selectedVehicle) {
-                        ForEach(vehicles) { vehicle in
-                            Text(vehicle.name).tag(vehicle as Vehicle?)
-                        }
-                        Text("Create New Vehicle").tag(nil as Vehicle?)
+                        vehiclePickerOptions()
                     }
-                    .onChange(of: selectedVehicle) { newValue in
-                        if newValue == nil {
+                    .onChange(of: selectedVehicle) { _, _ in
+                        if selectedVehicle == nil {
                             showAddVehicleSheet = true
                         }
                     }
@@ -60,6 +57,15 @@ struct AddRecordView: View {
             .sheet(isPresented: $showAddVehicleSheet) {
                 AddVehicleView(vehicles: $vehicles)
             }
+        }
+    }
+
+    private func vehiclePickerOptions() -> some View {
+        Group {
+            ForEach(vehicles) { vehicle in
+                Text(vehicle.name).tag(vehicle as Vehicle?)
+            }
+            Text("Create New Vehicle").tag(nil as Vehicle?)
         }
     }
 
